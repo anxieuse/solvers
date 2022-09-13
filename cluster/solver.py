@@ -54,20 +54,17 @@ def run_ilpsolver(model, solver, time_lim, mip_gap):
     results = opt.solve(model, tee=True, load_solutions=True)
     # results = opt.solve(model, tee=True, load_solutions=False)
     # results = opt.solve(model, tee=True)
-    model.pprint()
-    model.constraint.pprint()
-    # print results content
-    print(results)
+    # model.pprint()
+    # model.constraint.pprint()
+    # # print results content
+    # print(results)
 
-    print(model.vm2server)
     solvertime = time.time()-solverstart
     only_solver_time += solvertime
     print("Solver time: ", solvertime)
     print("Solver time: ", solvertime, file=log_file)
     print(f'Problem solved: {results.solver.termination_condition}')
     print(f'{results.solver.status=}')
-    print(f'{SolverStatus.ok=}, {SolverStatus.warning=}, {SolverStatus.error=}, {SolverStatus.aborted=}')
-    print(f'{TerminationCondition.optimal=}, {TerminationCondition.locallyOptimal=}, {TerminationCondition.globallyOptimal=}, {TerminationCondition.feasible=}, {TerminationCondition.infeasible=}, {TerminationCondition.maxTimeLimit=}, {TerminationCondition.maxIterations=}, {TerminationCondition.unbounded=}, {TerminationCondition.other=}')
     if (results.solver.status == SolverStatus.ok) or (results.solver.status == SolverStatus.aborted): #and (results.solver.termination_condition == TerminationCondition.optimal):
         if results.solver.termination_condition != TerminationCondition.optimal and results.solver.termination_condition != TerminationCondition.maxTimeLimit:
             print ("ERROR: solver condition: ", results.solver.termination_condition)
@@ -149,7 +146,6 @@ def VM2Server(server_capacities, vm_to_server_pair,
     # model.server_cap = Constraint(model.server_ids, rule=server_cap_rule)
 
     # Solve the model
-    print('debug0')
     run_ilpsolver(model, 'cbc', time_lim, mip_gap)
 
     vm_to_server = []
@@ -174,8 +170,7 @@ def main():
     parser.add_argument("-o", "--output", type=str, default = "./", help="Output dirpath")
     parser.add_argument("-t", "--timelimit", type=int, default = 60, help="Output dirpath")
     args = parser.parse_args()
-    args.input = "/home/leo/work/solvers/cluster/tests/sample2" # args.input.rstrip('/')
-    # args.input = args.input.rstrip('/')
+    args.input = args.input.rstrip('/')
     args.output = args.output.rstrip('/')
 
     # Create output folder 
