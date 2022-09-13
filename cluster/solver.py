@@ -167,14 +167,12 @@ def main():
     # Parse console arguments
     parser = argparse.ArgumentParser(description="Cluster solver")
     parser.add_argument("-i", "--input", type=str, default = "./", help="Input dirpath")
-    parser.add_argument("-o", "--output", type=str, default = "./", help="Output dirpath")
     parser.add_argument("-t", "--timelimit", type=int, default = 60, help="Output dirpath")
     args = parser.parse_args()
     args.input = args.input.rstrip('/')
-    args.output = args.output.rstrip('/')
 
     # Create output folder 
-    out_dirpath = args.output + f'/vm2server_{time_suffix}'
+    out_dirpath = args.input + f'/vm2server_{time_suffix}'
     if not os.path.isdir(out_dirpath):
         os.mkdir(out_dirpath)
 
