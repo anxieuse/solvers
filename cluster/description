@@ -1,0 +1,10 @@
+A cluster consists of N servers. The server i, 1 ≤ i ≤ N , can serve up to
+Ci ∈ N virtual machines (VM). We are given M virtual machines. A VM m,
+1 ≤ m ≤ M , can be allocated on one of two servers {im, jm} (the list of pairs
+is given in the input). The number of allocated VMs should be maximized.
+Write a program that allocates VMs and meets the mentioned requirements.
+For testing, you also need to write a program that generates a random examples
+of input data for the given N , M and Sum(C) = M . The input has to be
+written in two CSV-files: servers.csv has two columns id,capacity; VM.csv
+has 3 columns id,server1,server2. The output has to be written in the file
+allocated.csv with two columns VM,server.
