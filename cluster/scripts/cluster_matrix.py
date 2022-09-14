@@ -10,7 +10,7 @@ import time
 import subprocess
 import os
 import sys
-import argparse 
+import argparse
 from datetime import datetime
 import tqdm
 import pylab as plb
@@ -27,18 +27,22 @@ only_solver_time = 0
 SolutionNotFound = False
 solver_gap = 0
 lower_bound = 0
-    
-# Set the solver parameters
-def gen_ilpsolver_options(opt, solver, time_limit, mipgap=0.01):
-    if solver =='cplex':
-        opt.options["threads"]=1
-        opt.options["timelimit"]=time_limit
-        opt.options["mipgap"]=mipgap
-    if solver =='cbc':
-        opt.options["ratio"]=mipgap
-        opt.options["seconds"]= time_limit
 
-# Run IP solver and check the solution        
+# Set the solver parameters
+
+
+def gen_ilpsolver_options(opt, solver, time_limit, mipgap=0.01):
+    if solver == 'cplex':
+        opt.options["threads"] = 1
+        opt.options["timelimit"] = time_limit
+        opt.options["mipgap"] = mipgap
+    if solver == 'cbc':
+        opt.options["ratio"] = mipgap
+        opt.options["seconds"] = time_limit
+
+# Run IP solver and check the solution
+
+
 def run_ilpsolver(model, solver, time_lim, mip_gap):
     global only_solver_time
     global SolutionNotFound
@@ -50,14 +54,10 @@ def run_ilpsolver(model, solver, time_lim, mip_gap):
     gen_ilpsolver_options(opt, solver, time_lim, mip_gap)
 
     # Solve the model
-    solverstart=time.time()
+    solverstart = time.time()
     results = opt.solve(model, tee=True, load_solutions=True)
     # results = opt.solve(model, tee=True, load_solutions=False)
     # results = opt.solve(model, tee=True)
-    # model.pprint()
-    # model.constraint.pprint()
-    # # print results content
-    # print(results)
 
     solvertime = time.time()-solverstart
     only_solver_time += solvertime
@@ -65,33 +65,36 @@ def run_ilpsolver(model, solver, time_lim, mip_gap):
     print("Solver time: ", solvertime, file=log_file)
     print(f'Problem solved: {results.solver.termination_condition}')
     print(f'{results.solver.status=}')
-    if (results.solver.status == SolverStatus.ok) or (results.solver.status == SolverStatus.aborted): #and (results.solver.termination_condition == TerminationCondition.optimal):
+    # and (results.solver.termination_condition == TerminationCondition.optimal):
+    if (results.solver.status == SolverStatus.ok) or (results.solver.status == SolverStatus.aborted):
         if results.solver.termination_condition != TerminationCondition.optimal and results.solver.termination_condition != TerminationCondition.maxTimeLimit:
-            print ("ERROR: solver condition: ", results.solver.termination_condition)
+            print("ERROR: solver condition: ",
+                  results.solver.termination_condition)
             SolutionNotFound = True
         gap = mip_gap
         if (len(results.solution) > 0):
             gap = results.solution(0).gap
-        # model.solutions.load_from(results) 
+        # model.solutions.load_from(results)
         objvalue = value(model.objective)
-        #objvalue=value(instance.OBJ)
+        # objvalue=value(instance.OBJ)
         if objvalue == None:
-            print ('objvalue = None')
+            print('objvalue = None')
             objvalue = 1
         if solver == 'cbc' and gap != None:
             gap *= objvalue / (1 + gap)
         if solver == 'cplex' and gap != None:
             lower_bound = objvalue - gap
-        if gap == None:    
+        if gap == None:
             print('Obj = ', objvalue, file=log_file)
         else:
             if objvalue == 0:
                 solver_gap = 0
             else:
                 solver_gap = 100 * gap / objvalue
-            print('Obj = ', objvalue, '; gap = ', gap, '(', solver_gap, '%)', file=log_file)
+            print('Obj = ', objvalue, '; gap = ', gap,
+                  '(', solver_gap, '%)', file=log_file)
     else:
-        if (results.solver.termination_condition == TerminationCondition.infeasible): 
+        if (results.solver.termination_condition == TerminationCondition.infeasible):
             print("INFEASIBLE")
             # Do something when model is infeasible
         else:
@@ -99,61 +102,70 @@ def run_ilpsolver(model, solver, time_lim, mip_gap):
             print("Solver Status: ",  results.solver.status)
         SolutionNotFound = True
         return False
-    return True    
+    return True
 
 # MILP model
-# The goal is to assign each vm to a cluster and maximize the number of assigned vm 
-def VM2Server(server_capacities, vm_to_server_pair, 
-              solver, time_lim, mip_gap):
+# The goal is to assign each vm to a cluster and maximize the number of assigned vm
+
+
+def VM2Server(server_capacities, vm_to_server_pair,
+              solver, time_lim, mip_gap,
+              logger):
     global only_solver_time
 
-    # Create a model
+    logger.info("VM2Server: server_capacities = %s, vm_to_server_pair = %s",
+                server_capacities, vm_to_server_pair)
+
     model = ConcreteModel()
     model.server_capacities = server_capacities
     model.vm_to_server_pair = vm_to_server_pair
-    
+
     model.num_vms = len(vm_to_server_pair)
     model.num_servers = len(server_capacities)
 
     model.server_ids = range(model.num_servers)
     model.vm_ids = range(model.num_vms)
 
-    # Create variables
-    model.vm2server = Var(model.vm_ids, model.server_ids, domain=Binary)
-    
-    # Create objective
-    model.objective = Objective(expr=sum(model.vm2server[i,j] for i in model.vm_ids for j in model.server_ids), sense=maximize)
+    logger.info(
+        f'Create model: {model.num_servers} servers, {model.num_vms} vms')
 
-    # Create constraints
+    logger.info(f'Create variables')
+    model.vm2server = Var(model.vm_ids, model.server_ids, domain=Binary)
+
+    logger.info(f'Create objective')
+    model.objective = Objective(expr=sum(
+        model.vm2server[i, j] for i in model.vm_ids for j in model.server_ids), sense=maximize)
+
+    logger.info(f'Create constraints')
+
     def vm_one_serv_rule(model, vm_id):
-      return sum(model.vm2server[vm_id,serv_id] for serv_id in model.server_ids) == 1
+        return sum(model.vm2server[vm_id, serv_id] for serv_id in model.server_ids) <= 1
+
     model.vm2serverer = Constraint(model.vm_ids, rule=vm_one_serv_rule)
 
     # capacity rule for each server: number of assigned vm <= server capacity
     def server_cap_rule(model, serv_id):
-      return sum(model.vm2server[vm_id,serv_id] for vm_id in model.vm_ids) <= model.server_capacities[serv_id]
+        return sum(model.vm2server[vm_id, serv_id] for vm_id in model.vm_ids) <= model.server_capacities[serv_id]
+
     model.capacity = Constraint(model.server_ids, rule=server_cap_rule)
 
     # rule for vms that they can only be assigned to servers from vm_to_server_pair[i]
     def vm_to_server_rule(model, vm_id):
-      non_adjacent_servers = [serv_id for serv_id in model.server_ids if serv_id not in model.vm_to_server_pair[vm_id]]
-      return sum(model.vm2server[vm_id,serv_id] for serv_id in non_adjacent_servers) == 0
-    # def vm_to_server_rule(model, vm_id):
-    #   return sum(model.vm2server[vm_id,serv_id] for serv_id in model.vm_to_server_pair[vm_id]) >= 1
-    model.vm_to_server = Constraint(model.vm_ids, rule=vm_to_server_rule)
-    # def server_cap_rule(model, j):
-    #   return sum(model.vm2server[i,j] * model.vm_to_server_pair[i][1] for i in model.vm_ids) <= model.server_capacities[j] * model.y[j]
-    # model.server_cap = Constraint(model.server_ids, rule=server_cap_rule)
+        non_adjacent_servers = [
+            serv_id for serv_id in model.server_ids if serv_id not in model.vm_to_server_pair[vm_id]]
+        return sum(model.vm2server[vm_id, serv_id] for serv_id in non_adjacent_servers) == 0
 
-    # Solve the model
+    model.vm_to_server = Constraint(model.vm_ids, rule=vm_to_server_rule)
+
+    logger.info(f'Run solver')
     run_ilpsolver(model, 'cbc', time_lim, mip_gap)
 
     vm_to_server = []
     for i in model.vm_ids:
-      for j in model.server_ids:
-        if value(model.vm2server[i,j]) == 1:
-          vm_to_server.append((i, j))
-          break
+        for j in model.server_ids:
+            if value(model.vm2server[i, j]) == 1:
+                vm_to_server.append((i, j))
+                break
 
     return vm_to_server
 
@@ -166,13 +178,17 @@ script_name = script_name_w_ext.split('.')[0]
 def main():
     # Parse console arguments
     parser = argparse.ArgumentParser(description="Cluster solver")
-    parser.add_argument("-i", "--input", type=str, default = "./", help="Input dirpath")
-    parser.add_argument("-t", "--timelimit", type=int, default = 60, help="Output dirpath")
+    parser.add_argument("-i", "--input", type=str,
+                        default="./", help="Input dirpath")
+    parser.add_argument("-t", "--timelimit", type=int,
+                        default=60, help="Output dirpath")
     args = parser.parse_args()
     args.input = args.input.rstrip('/')
 
-    # Create output folder 
-    out_dirpath = args.input + f'/vm2server_{time_suffix}'
+    # Create output folder
+    if not os.path.exists(args.input + f'/res'):
+        os.makedirs(args.input + f'/res')
+    out_dirpath = args.input + f'/res/vm2server_{time_suffix}'
     if not os.path.isdir(out_dirpath):
         os.mkdir(out_dirpath)
 
@@ -183,32 +199,36 @@ def main():
     logger.info(f'Init solver options')
     solver = "cbc"
     mip_gap = 0.01
-    logger.info(f'solver={solver}, mip_gap={mip_gap}, time_limit={args.timelimit}')
+    logger.info(
+        f'solver={solver}, mip_gap={mip_gap}, time_limit={args.timelimit}')
 
     logger.info(f'Read servers.csv')
     servers_df = pd.read_csv(args.input + '/servers.csv', sep=',', header=0)
     servers = servers_df['capacity'].tolist()
     logger.info(f'servers={servers}')
-    
+
     logger.info(f'Read vm.csv')
     vms_df = pd.read_csv(args.input + '/vm.csv', sep=',', header=0)
     vms = list(zip(vms_df['server1'].tolist(), vms_df['server2'].tolist()))
     logger.info(f'vms={vms}')
 
-
     logger.info(f'Start solver')
     start = time.time()
-    vm_to_server = VM2Server(servers, vms, solver, args.timelimit, mip_gap)
+    vm_to_server = VM2Server(servers, vms, solver,
+                             args.timelimit, mip_gap, logger)
     runtime = time.time() - start
 
     logger.info(f"Runtime: {runtime:.2f} sec")
     logger.info(f"Solver time: {only_solver_time:.2f} sec")
 
     if SolutionNotFound:
-      logger.info(f"Solution not found")
+        logger.info(f"Solution not found")
     else:
-      logger.info(f"Result: {vm_to_server}")
+        logger.info(f"Result: {vm_to_server}")
+        logger.info(f'Write allocated.csv')
+        allocated_df = pd.DataFrame(vm_to_server, columns=['vm', 'server'])
+        allocated_df.to_csv(out_dirpath + '/allocated.csv', index=False)
 
 
 if __name__ == '__main__':
-    main() 
+    main()

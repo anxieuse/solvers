@@ -1,0 +1,4 @@
+Given a tree T with non-negative weights of edges and non-positive weights of
+nodes. The weight of a subgraph H ⊆ T is the sum of weights of its nodes and
+edges. Consider a problem of finding a subgraph of maximum weight. Develop
+and implement an efficient algorithm for solving this problem. 

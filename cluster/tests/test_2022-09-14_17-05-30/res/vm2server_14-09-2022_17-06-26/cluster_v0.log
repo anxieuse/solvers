@@ -1,0 +1,6 @@
+[2022-09-14 17:06:26,927| INFO] Started script_abspath='/home/leo/work/solvers/cluster/scripts/cluster_v0.py' with args: Namespace(input='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30', timelimit=60)
+[2022-09-14 17:06:26,927| INFO] Init solver options
+[2022-09-14 17:06:26,927| INFO] solver=cbc, mip_gap=0.01, time_limit=60
+[2022-09-14 17:06:26,927| INFO] Read servers.csv
+[2022-09-14 17:06:26,987| INFO] servers=[1, 0, 1, 2]
+[2022-09-14 17:06:26,987| INFO] Read vm.csv

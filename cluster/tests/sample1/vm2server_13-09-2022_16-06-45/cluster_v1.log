@@ -1,0 +1,13 @@
+[2022-09-13 16:06:45,728| INFO] Started script_abspath='/home/leo/work/solvers/cluster/cluster_v1.py' with args: Namespace(input='/home/leo/work/solvers/cluster/tests/sample1', timelimit=60)
+[2022-09-13 16:06:45,729| INFO] Init solver options
+[2022-09-13 16:06:45,729| INFO] solver=cbc, mip_gap=0.01, time_limit=60
+[2022-09-13 16:06:45,729| INFO] Read servers.csv
+[2022-09-13 16:06:45,779| INFO] servers=[1, 1, 2, 1]
+[2022-09-13 16:06:45,780| INFO] Read vm.csv
+[2022-09-13 16:06:45,782| INFO] vms=[(0, 2), (1, 2), (2, 3)]
+[2022-09-13 16:06:45,782| INFO] Start solver
+[2022-09-13 16:06:45,783| INFO] VM2Server: server_capacities = [1, 1, 2, 1], vm_to_server_pair = [(0, 2), (1, 2), (2, 3)]
+[2022-09-13 16:06:45,783| INFO] Create model: 4 servers, 3 vms
+[2022-09-13 16:06:45,783| INFO] Create variables
+[2022-09-13 16:06:45,784| INFO] Create objective
+[2022-09-13 16:06:45,784| INFO] Create constraints

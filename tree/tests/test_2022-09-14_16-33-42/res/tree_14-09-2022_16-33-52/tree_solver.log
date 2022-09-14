@@ -1,0 +1,9 @@
+[2022-09-14 16:33:52,159| INFO] Started script_abspath='/home/leo/work/solvers/tree/scripts/tree_solver.py' with args: Namespace(input='/home/leo/work/solvers/tree/tests/test_2022-09-14_16-33-42', timelimit=60)
+[2022-09-14 16:33:52,159| INFO] Init solver options
+[2022-09-14 16:33:52,159| INFO] solver=cbc, mip_gap=0.01, time_limit=60
+[2022-09-14 16:33:52,159| INFO] Read nodes.csv
+[2022-09-14 16:33:52,209| INFO] Read edges.csv
+[2022-09-14 16:33:52,213| INFO] Start solver
+[2022-09-14 16:34:02,265| INFO] Runtime: 10.05 sec
+[2022-09-14 16:34:02,265| INFO] Solver time: 10.04 sec
+[2022-09-14 16:34:02,265| INFO] Result: [(0, 1), (1, 2), (1, 6), (1, 9), (9, 11), (9, 12), (6, 8)]

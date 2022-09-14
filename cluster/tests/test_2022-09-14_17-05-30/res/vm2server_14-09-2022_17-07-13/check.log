@@ -1,0 +1,21 @@
+[2022-09-14 17:17:08,924| INFO] Started script_abspath='/home/leo/work/solvers/cluster/scripts/check.py' with args: Namespace(input='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30', results='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30/res/vm2server_14-09-2022_17-07-13')
+[2022-09-14 17:17:08,924| INFO] Load servers.csv
+[2022-09-14 17:17:08,927| INFO] Load vm.csv
+[2022-09-14 17:17:08,929| INFO] Load allocated.csv
+[2022-09-14 17:18:02,090| INFO] Started script_abspath='/home/leo/work/solvers/cluster/scripts/check.py' with args: Namespace(input='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30', results='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30/res/vm2server_14-09-2022_17-07-13')
+[2022-09-14 17:18:02,090| INFO] Load servers.csv
+[2022-09-14 17:18:02,093| INFO] Load vm.csv
+[2022-09-14 17:18:02,095| INFO] Load allocated.csv
+[2022-09-14 17:18:59,376| INFO] Started script_abspath='/home/leo/work/solvers/cluster/scripts/check.py' with args: Namespace(input='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30', results='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30/res/vm2server_14-09-2022_17-07-13')
+[2022-09-14 17:18:59,376| INFO] Load servers.csv
+[2022-09-14 17:18:59,379| INFO] Load vm.csv
+[2022-09-14 17:18:59,381| INFO] Load allocated.csv
+[2022-09-14 17:19:58,237| INFO] Started script_abspath='/home/leo/work/solvers/cluster/scripts/check.py' with args: Namespace(input='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30', results='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30/res/vm2server_14-09-2022_17-07-13')
+[2022-09-14 17:19:58,237| INFO] Load servers.csv
+[2022-09-14 17:19:58,240| INFO] Load vm.csv
+[2022-09-14 17:19:58,242| INFO] Load allocated.csv
+[2022-09-14 17:43:12,301| INFO] Started script_abspath='/home/leo/work/solvers/cluster/scripts/check.py' with args: Namespace(input='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30', results='/home/leo/work/solvers/cluster/tests/test_2022-09-14_17-05-30/res/vm2server_14-09-2022_17-07-13')
+[2022-09-14 17:43:12,301| INFO] Load servers.csv
+[2022-09-14 17:43:12,304| INFO] Load vm.csv
+[2022-09-14 17:43:12,305| INFO] Load allocated.csv
+[2022-09-14 17:43:12,310| INFO] Allocated 4 virtual machines
